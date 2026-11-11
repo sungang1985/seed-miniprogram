@@ -29,6 +29,17 @@ function loadPage(name, overrides = {}) {
     '../../config': { env: 'develop', mock: true, version: '1.0.0' },
     '../../utils/session': Object.assign({ getSession: () => null }, overrides.session),
     '../../utils/storage': Object.assign({ get: (key, fallback) => fallback, set: () => true, clear: () => true }, overrides.storage),
+    '../../services/location-sharing': {
+      createLocationSharing() {
+        const state = { configured: false, phase: 'idle', room: null, sharing: false,
+          pendingStop: false, errorMessage: '', errorCode: '', busyAction: '' };
+        const snapshot = () => state;
+        return { snapshot, create: async () => state, join: async () => state,
+          startPublishing: async () => state, pausePublishing: async () => state,
+          leave: async () => state, close: async () => state, suspend: async () => state,
+          resumePolling: snapshot, destroy: async () => state, updateLocation() {}, invitePath: () => '' };
+      }
+    },
     '../../services/location-tracker': {
       createTracker() {
         const state = { status: 'idle', segments: [], distanceMeters: 0, durationMs: 0,

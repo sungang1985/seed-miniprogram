@@ -387,3 +387,30 @@ test('clearing a completed track restores the configured place without letting a
   assert.equal(component.data.following, true);
   assert.equal(events.filter((event) => event.name === 'error').length, 0);
 });
+
+test('friend markers coexist with the own position without resetting zoom or exposing invalid markers', () => {
+  const { component, updateProps } = loadMap({ liveLocation: { latitude: 22.5, longitude: 114.1 }, tracking: true });
+  component.onMapUpdated();
+  component.onRegionChange({ detail: { type: 'end', scale: 9 } });
+  updateProps({ extraMarkers: [
+    { id: 100, latitude: 0, longitude: 0, title: '好友 1' },
+    { id: 101, latitude: 91, longitude: 114, title: '无效定位' },
+    { id: 2, latitude: 22, longitude: 114, title: '保留 ID' }
+  ] });
+  assert.equal(component.data.loading, false);
+  assert.equal(component.data.currentScale, 9);
+  assert.equal(component.data.markers.length, 2);
+  assert.equal(component.data.markers[0].id, 2);
+  assert.equal(component.data.markers[1].latitude, 0);
+  updateProps({ extraMarkers: [] });
+  assert.equal(component.data.markers.length, 1);
+});
+
+test('clicking a friend marker forwards its position and label separately from the own marker', () => {
+  const { component, events } = loadMap({ extraMarkers: [{ id: 100, latitude: 31.2, longitude: 121.4, title: '发起人' }] });
+  component.onMapUpdated();
+  component.onMarkerTap({ detail: { markerId: '100' } });
+  assert.deepEqual(events.at(-1), {
+    name: 'markertap', detail: { markerId: 100, latitude: 31.2, longitude: 121.4, title: '发起人', address: '好友共享位置' }
+  });
+});

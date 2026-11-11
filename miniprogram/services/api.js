@@ -17,9 +17,9 @@ function getOverview() {
     description: '从一个好起点，构建你的小程序。',
     status: 'ready',
     stats: [
-      { label: '基础页面', value: '03' },
+      { label: '基础页面', value: '04' },
       { label: '公共组件', value: '03' },
-      { label: '运行依赖', value: '0' }
+      { label: '客户端依赖', value: '0' }
     ]
   });
 }

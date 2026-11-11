@@ -2,7 +2,8 @@
   "pages": [
     "pages/home/index",
     "pages/components/index",
-    "pages/profile/index"
+    "pages/profile/index",
+    "pages/location-share/index"
   ],
   "window": {
     "navigationBarTitleText": "起点 Seed",
@@ -40,7 +41,7 @@
   "style": "v2",
   "permission": {
     "scope.userLocation": {
-      "desc": "在你开始运动记录后，用于持续绘制自己的运动轨迹并计算距离和速度"
+      "desc": "用于记录运动轨迹，并在你主动开启好友共享后向同一共享房间成员提供最新位置"
     }
   },
   "requiredPrivateInfos": ["startLocationUpdate", "onLocationChange"],

@@ -86,6 +86,17 @@ function loadHome(options = {}) {
       getFeatures: async () => []
     },
     '../../config': { env: 'develop', mock: true, version: '1.0.0' },
+    '../../services/location-sharing': {
+      createLocationSharing() {
+        const value = { configured: false, phase: 'idle', room: null, sharing: false,
+          pendingStop: false, errorMessage: '', errorCode: '', busyAction: '' };
+        const snapshot = () => value;
+        return { snapshot, create: async () => value, join: async () => value,
+          startPublishing: async () => value, pausePublishing: async () => value,
+          leave: async () => value, close: async () => value, suspend: async () => value,
+          resumePolling: snapshot, destroy: async () => value, updateLocation() {}, invitePath: () => '' };
+      }
+    },
     '../../services/location-tracker': {
       createTracker(settings) {
         calls.push({ method: 'createTracker' });

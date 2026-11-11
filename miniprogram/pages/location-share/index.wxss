@@ -1,0 +1,48 @@
+.share-page { padding-top: 37rpx; }
+.share-page .eyebrow { font-size: 19rpx; letter-spacing: 2.5rpx; color: #81958a; }
+.share-heading { font-size: 54rpx; line-height: 1.45; font-weight: 600; color: #183d2c; margin-top: 26rpx; letter-spacing: -1.5rpx; }
+.share-heading view { color: #07a66a; }
+.share-description { display: block; color: #8b9b91; font-size: 24rpx; margin: 16rpx 0 35rpx; }
+.invitation-card { background: #fff; border: 1rpx solid #e1ece4; border-radius: 27rpx; padding: 42rpx 30rpx 23rpx; text-align: center; }
+.invitation-symbol { display: flex; align-items: center; justify-content: center; width: 100rpx; height: 100rpx; margin: 0 auto 24rpx; background: #ecf7ef; color: #23875d; border-radius: 30rpx; font-size: 62rpx; }
+.invitation-title { display: block; font-weight: 600; font-size: 31rpx; color: #294d37; }
+.invitation-description { display: block; color: #84968a; font-size: 24rpx; line-height: 1.8; margin-top: 17rpx; }
+.invitation-facts { display: flex; justify-content: center; gap: 22rpx; margin: 25rpx 0; color: #6d937b; font-size: 21rpx; }
+.invitation-facts text { padding: 7rpx 13rpx; background: #f0f7f1; border-radius: 9rpx; }
+.service-note { display: block; color: #9a7f5a; font-size: 23rpx; line-height: 1.7; padding: 10rpx 0 21rpx; }
+.join-button { margin-top: 20rpx; }
+.back-button { background: transparent; color: #72947e; padding: 18rpx 0 4rpx; font-size: 23rpx; }
+.room-status { display: flex; align-items: center; color: #4f8b65; font-size: 23rpx; margin-bottom: 20rpx; }
+.live-dot { height: 10rpx; width: 10rpx; border-radius: 50%; background: #07a66a; margin-right: 10rpx; }
+.expires { margin-left: auto; color: #97a69b; font-size: 21rpx; }
+.shared-map-card { border-radius: 25rpx; border: 1rpx solid #e0eae3; overflow: hidden; background: #fff; }
+.shared-map { width: 100%; height: 480rpx; display: block; }
+.map-bottom { padding: 17rpx 21rpx; display: flex; align-items: center; gap: 16rpx; }
+.map-bottom > text { flex: 1; font-size: 20rpx; color: #8c9e90; }
+.map-bottom button { flex-shrink: 0; padding: 8rpx 12rpx; margin: 0; line-height: 1.7; color: #4b8e66; background: #f0f7f2; font-size: 20rpx; border-radius: 10rpx; }
+.member-card, .own-sharing-card { margin-top: 25rpx; border: 1rpx solid #e4ece6; border-radius: 24rpx; background: #fff; padding: 23rpx 25rpx; }
+.member-heading { display: flex; justify-content: space-between; color: #3d5e47; font-size: 26rpx; font-weight: 500; padding-bottom: 12rpx; }
+.member-heading text:last-child { font-size: 21rpx; font-weight: 400; color: #91a193; }
+.member-row { display: flex; align-items: center; gap: 17rpx; padding: 22rpx 0; border-top: 1rpx solid #f0f4ef; }
+.member-avatar { display: flex; align-items: center; justify-content: center; width: 64rpx; height: 64rpx; flex-shrink: 0; border-radius: 19rpx; background: #f0f3f8; color: #91a1b4; font-size: 26rpx; }
+.self-avatar { color: #3c986c; background: #eaf7ee; }
+.member-copy { flex: 1; }
+.member-name { display: flex; align-items: center; color: #395742; font-size: 26rpx; }
+.owner-tag { color: #8ba58f; margin-left: 13rpx; font-size: 18rpx; background: #f1f7f1; padding: 2rpx 8rpx; border-radius: 6rpx; }
+.member-state { display: block; color: #9aaa9b; font-size: 21rpx; margin-top: 3rpx; }
+.member-dot { height: 12rpx; width: 12rpx; border-radius: 50%; background: #d6dfd7; margin-right: 3rpx; }
+.member-live { background: #07a66a; }
+.own-sharing-title { display: flex; justify-content: space-between; align-items: center; color: #3c5f46; font-size: 28rpx; font-weight: 500; }
+.own-sharing-badge { font-size: 20rpx; font-weight: 400; color: #7e9d86; }
+.own-sharing-hint { display: block; color: #8fa18f; font-size: 23rpx; margin-top: 10rpx; }
+.own-share-button { margin-top: 22rpx; font-size: 25rpx; }
+.foreground-note { display: block; color: #a1afa2; font-size: 20rpx; line-height: 1.7; margin-top: 18rpx; }
+.settings-button { background: transparent; color: #689376; font-size: 22rpx; padding: 13rpx 0 0; }
+.room-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 24rpx; gap: 17rpx; }
+.invite-button, .leave-button { flex: 1; border-radius: 15rpx; padding: 17rpx 12rpx; font-size: 23rpx; line-height: 1.7; margin: 0; }
+.invite-button { background: #e8f5ec; color: #40865d; }
+.leave-button { background: #eef1ed; color: #89998b; }
+.share-error { display: flex; align-items: flex-start; gap: 13rpx; background: #fff5ed; border: 1rpx solid #f2e5d8; color: #a0805b; border-radius: 17rpx; padding: 20rpx; margin-top: 23rpx; font-size: 23rpx; line-height: 1.7; }
+.share-error > text { display: flex; align-items: center; justify-content: center; background: #eedcc7; border-radius: 50%; height: 29rpx; width: 29rpx; flex-shrink: 0; margin-top: 4rpx; font-size: 20rpx; }
+.share-error view text { display: block; }
+.sharing-note { display: block; color: #a1ada2; font-size: 21rpx; line-height: 1.8; margin-top: 28rpx; padding: 0 3rpx; }

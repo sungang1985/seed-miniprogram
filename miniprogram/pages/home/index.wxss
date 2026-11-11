@@ -46,6 +46,19 @@
 .motion-primary text { margin-left: 17rpx; }
 .motion-secondary { background: #edf5ef; color: #41805d; border: 1rpx solid #dfebe2; }
 .motion-primary::after, .motion-secondary::after { border: 0; }
+.friend-share-card { margin: 0 0 36rpx; padding: 28rpx; border: 1rpx solid #dfeae2; border-radius: 26rpx; background: #fff; }
+.friend-share-status { display: flex; justify-content: space-between; align-items: center; color: #377451; font-size: 24rpx; }
+.friend-share-status text:last-child { color: #8d9e92; font-size: 21rpx; }
+.friend-share-hint, .friend-share-note { display: block; margin: 16rpx 0 23rpx; color: #87998b; font-size: 22rpx; line-height: 1.75; }
+.friend-share-note { margin-bottom: 0; font-size: 20rpx; }
+.friend-share-members { margin-bottom: 24rpx; padding: 8rpx 20rpx; border-radius: 16rpx; background: #f4f8f4; }
+.friend-share-member { display: flex; justify-content: space-between; padding: 14rpx 0; color: #43644d; font-size: 23rpx; }
+.friend-share-member text:last-child { color: #8e9e91; font-size: 21rpx; }
+.friend-share-error { display: block; margin-bottom: 22rpx; padding: 16rpx; border-radius: 12rpx; background: #faf1e4; color: #9b7747; font-size: 22rpx; line-height: 1.7; }
+.friend-share-actions { display: flex; align-items: center; gap: 16rpx; margin-top: 16rpx; }
+.friend-share-actions button { flex: 1; min-width: 0; font-size: 23rpx; }
+.friend-share-close { padding: 20rpx 8rpx; line-height: 1.6; background: transparent; color: #8b9a8e; }
+.friend-share-close::after { border: 0; }
 .ready-card { padding: 31rpx 34rpx 27rpx; border-radius: 28rpx; background: #0b4c38; color: #fff; overflow: hidden; position: relative; }
 .ready-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
 .ready-icon { height: 58rpx; width: 58rpx; background: #1c654c; border: 1rpx solid #34795f; border-radius: 19rpx; display: flex; align-items: center; justify-content: center; color: #b2efbe; font-size: 31rpx; }

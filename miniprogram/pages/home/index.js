@@ -2,6 +2,7 @@ const api = require('../../services/api');
 const config = require('../../config');
 const { createTracker } = require('../../services/location-tracker');
 const storage = require('../../utils/storage');
+const { createLocationSharing } = require('../../services/location-sharing');
 
 const LAST_TRACK_KEY = 'motion:last-session';
 
@@ -63,17 +64,134 @@ Page({
     trackPolyline: [],
     trackLocation: null,
     trackActive: false,
+    friendShare: {
+      configured: false, phase: 'idle', sharing: false, pendingStop: false, busy: false,
+      hasRoom: false, isOwner: false, canInvite: false, statusLabel: '尚未开启',
+      expiresText: '', members: [], errorMessage: '', hint: '邀请好友加入，查看彼此的实时位置'
+    },
+    friendMarkers: [],
     features: DEFAULT_FEATURES,
     loading: true,
     requesting: false,
     errorMessage: '',
-    stats: [{ value: '03', label: '基础页面' }, { value: '03', label: '公共组件' }, { value: '0', label: '运行依赖' }],
+    stats: [{ value: '04', label: '基础页面' }, { value: '03', label: '公共组件' }, { value: '0', label: '客户端依赖' }],
     requestResult: ''
   },
 
   onLoad() {
+    this.initFriendSharing();
     this.initMotionTracking();
     this.loadData();
+  },
+
+  initFriendSharing() {
+    if (this._friendSharing) return;
+    this._friendHidden = false;
+    this._friendDisposed = false;
+    this._friendAction = 0;
+    this._friendSharing = createLocationSharing({ onChange: (snapshot) => this.applyFriendShareSnapshot(snapshot) });
+    this.applyFriendShareSnapshot(this._friendSharing.snapshot());
+  },
+
+  applyFriendShareSnapshot(snapshot) {
+    if (this._friendDisposed || !snapshot) return;
+    const room = snapshot.room;
+    const hasRoom = !!room && room.status === 'active' && snapshot.phase !== 'closed' && snapshot.phase !== 'expired';
+    const members = hasRoom && Array.isArray(room.members) ? room.members : [];
+    const canDisplay = hasRoom && snapshot.phase === 'active';
+    const friendMarkers = canDisplay ? members.filter((member) => member.id !== room.selfId && member.live && isCoordinate(member.location))
+      .map((member, index) => ({
+        id: 100 + index, latitude: member.location.latitude, longitude: member.location.longitude,
+        title: member.label, iconPath: '/assets/tabbar/home-active.png', width: 28, height: 28,
+        callout: { content: member.label, display: 'ALWAYS', color: '#315d49', bgColor: '#ffffff', padding: 8, borderRadius: 8, fontSize: 12 }
+      })) : [];
+    let expiresText = '';
+    if (hasRoom && Number.isFinite(room.expiresAt)) {
+      const date = new Date(room.expiresAt);
+      expiresText = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')} 到期`;
+    }
+    let statusLabel = !snapshot.configured ? '服务尚未开通' : '尚未开启';
+    if (hasRoom) statusLabel = snapshot.pendingStop ? '停止共享待确认' : (snapshot.sharing ? '正在共享我的位置' : '共享地图已创建');
+    if (snapshot.phase === 'closed') statusLabel = '共享已关闭';
+    if (snapshot.phase === 'expired') statusLabel = '共享已过期';
+    if (snapshot.errorMessage) statusLabel = snapshot.pendingStop ? '停止共享待确认' : '连接异常';
+    this.setData({
+      friendShare: {
+        configured: !!snapshot.configured, phase: snapshot.phase, sharing: !!snapshot.sharing,
+        pendingStop: !!snapshot.pendingStop, busy: !!snapshot.busyAction,
+        hasRoom, isOwner: hasRoom && room.selfId === room.ownerId,
+        canInvite: hasRoom && !!this._friendSharing && !!this._friendSharing.invitePath(),
+        statusLabel, expiresText, errorMessage: snapshot.errorMessage || '',
+        hint: !snapshot.configured ? '好友共享服务尚未开通，个人运动记录仍可使用' : '有效期 30 分钟；离开首页会暂停发布自己的位置',
+        members: members.map((member) => ({
+          id: member.id, label: member.id === room.selfId ? '我' : member.label,
+          statusText: !canDisplay ? '等待重新连接' : (member.live && member.location ? '位置已更新' : (member.sharing ? '等待有效定位' : '未共享位置'))
+        }))
+      },
+      friendMarkers
+    });
+  },
+
+  async enableFriendPublishing(action) {
+    this.initMotionTracking();
+    const state = this._tracker.snapshot();
+    if (state.status !== 'recording') await this.runTrackAction(state.status === 'paused' ? 'resume' : 'start');
+    if (this._friendDisposed || this._friendHidden || action !== this._friendAction) return;
+    const locationState = this._tracker.snapshot();
+    if (locationState.status !== 'recording') return;
+    const sharingState = await this._friendSharing.startPublishing();
+    if (this._friendDisposed || this._friendHidden || action !== this._friendAction || !sharingState.sharing) return;
+    const current = this._tracker.snapshot();
+    if (current.status === 'recording' && !current.waitingForLocation && isCoordinate(current.currentLocation)) {
+      this._friendSharing.updateLocation(current.currentLocation);
+    }
+  },
+
+  async onCreateFriendShare() {
+    this.initFriendSharing();
+    if (!this._friendSharing.snapshot().configured) {
+      wx.showToast({ title: '好友共享服务尚未开通', icon: 'none' });
+      return;
+    }
+    if (this.data.friendShare.busy) return;
+    const action = ++this._friendAction;
+    const state = await this._friendSharing.create();
+    if (this._friendDisposed || this._friendHidden || action !== this._friendAction || !state.room || state.phase !== 'active') return;
+    return this.enableFriendPublishing(action);
+  },
+
+  async onResumeFriendShare() {
+    this.initFriendSharing();
+    if (this.data.friendShare.busy || !this.data.friendShare.hasRoom) return;
+    return this.enableFriendPublishing(++this._friendAction);
+  },
+
+  onPauseFriendShare() {
+    if (!this._friendSharing) return;
+    this._friendAction += 1;
+    if (this._tracker && this._tracker.snapshot().status === 'starting') this._tracker.pause();
+    return this._friendSharing.pausePublishing();
+  },
+
+  onCloseFriendShare() {
+    if (!this._friendSharing) return;
+    this._friendAction += 1;
+    return this._friendSharing.close();
+  },
+
+  onShareAppMessage(event) {
+    const path = event && event.from === 'button' && event.target && event.target.dataset &&
+      event.target.dataset.action === 'invite-room' && this._friendSharing && this._friendSharing.invitePath();
+    return {
+      title: path ? '邀请你加入实时位置共享' : '起点 Seed · 记录每一步',
+      path: path || '/pages/home/index',
+      imageUrl: '/assets/share/location-invite.png'
+    };
+  },
+
+  onShow() {
+    this._friendHidden = false;
+    if (this._friendSharing) this._friendSharing.resumePolling();
   },
 
   initMotionTracking() {
@@ -141,6 +259,13 @@ Page({
     }
     this._lastTrackStatus = status;
     this.setData(patch);
+    if (this._friendSharing && !this._friendHidden && !this._friendDisposed) {
+      if (status === 'recording' && !snapshot.waitingForLocation && position && this._friendSharing.snapshot().sharing) {
+        this._friendSharing.updateLocation(position);
+      } else if (status !== 'recording' && previousStatus === 'recording' && this._friendSharing.snapshot().sharing) {
+        this._friendSharing.pausePublishing();
+      }
+    }
     if (status === 'finished' && previousStatus !== 'finished' && !this._restoringTrack) {
       if (!track.pointCount) {
         this.setData({ 'track.saveMessage': '本次没有可保存的定位点' });
@@ -188,16 +313,23 @@ Page({
   },
 
   onHide() {
-    if (!this._tracker) return;
-    const state = this._tracker.snapshot();
-    if (state.status === 'starting' || state.status === 'recording') {
-      return this._tracker.pause('已离开首页，记录已暂停；回到首页后可继续');
-    }
+    this._friendHidden = true;
+    this._friendAction = (this._friendAction || 0) + 1;
+    const tasks = [];
+    if (this._friendSharing) tasks.push(this._friendSharing.suspend());
+    const state = this._tracker && this._tracker.snapshot();
+    if (state && (state.status === 'starting' || state.status === 'recording')) tasks.push(this._tracker.pause('已离开首页，记录已暂停；回到首页后可继续'));
+    return Promise.all(tasks.map((task) => Promise.resolve(task).catch(() => null)));
   },
 
   onUnload() {
     this._motionDisposed = true;
-    if (this._tracker) return this._tracker.destroy();
+    this._friendDisposed = true;
+    this._friendAction = (this._friendAction || 0) + 1;
+    const tasks = [];
+    if (this._friendSharing) tasks.push(this._friendSharing.destroy());
+    if (this._tracker) tasks.push(this._tracker.destroy());
+    return Promise.all(tasks.map((task) => Promise.resolve(task).catch(() => null)));
   },
 
   onPullDownRefresh() {

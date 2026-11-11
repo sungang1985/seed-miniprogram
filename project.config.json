@@ -1,6 +1,7 @@
 {
   "description": "起点 Seed · 微信小程序基础框架",
   "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "cloudfunctions/",
   "compileType": "miniprogram",
   "appid": "touristappid",
   "projectname": "seed-miniprogram",

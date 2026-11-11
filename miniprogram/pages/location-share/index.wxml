@@ -1,0 +1,44 @@
+<view class="page share-page">
+  <text class="eyebrow">TOGETHER / LIVE LOCATION</text>
+  <view class="share-heading">在同一张地图，<view>看见彼此。</view></view>
+  <text class="share-description">邀请好友加入，各自开启后共享最新位置。</text>
+
+  <view wx:if="{{!joined}}" class="invitation-card">
+    <view class="invitation-symbol">⌖</view>
+    <text class="invitation-title">{{phase === 'closed' ? '本次共享已结束' : phase === 'expired' ? '这份邀请已过期' : '你收到一份位置共享邀请'}}</text>
+    <text class="invitation-description" wx:if="{{phase !== 'closed' && phase !== 'expired'}}">加入后可以查看成员主动共享的位置。你的位置会在点击“共享我的位置”并授权后才开始发送。</text>
+    <text class="invitation-description" wx:else>本次地图中的成员位置已撤回，请向好友获取新的邀请。</text>
+    <view class="invitation-facts"><text>每次最长 30 分钟</text><text>最多 8 位成员</text></view>
+    <text wx:if="{{!configured}}" class="service-note">位置共享服务尚未开通，请联系小程序提供者。</text>
+    <text wx:elif="{{!inviteValid}}" class="service-note">邀请信息不完整，请从好友发来的小程序卡片重新进入。</text>
+    <button wx:if="{{phase !== 'closed' && phase !== 'expired'}}" class="primary-button join-button" bindtap="onJoinRoom" loading="{{busy}}" disabled="{{busy || !configured || !inviteValid}}" hover-class="button-hover">{{busy ? '正在加入…' : '加入共享地图'}}</button>
+    <button class="back-button" bindtap="onBackHome" hover-class="button-hover">返回首页 ↗</button>
+  </view>
+
+  <block wx:else>
+    <view class="room-status"><view class="live-dot"></view><text>{{statusLabel}}</text><text class="expires">{{expiresText}}</text></view>
+    <view class="shared-map-card">
+      <map id="shared-location-map" class="shared-map" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" markers="{{markers}}" show-location="{{false}}" show-scale="{{true}}" enable-scroll="{{true}}" enable-zoom="{{true}}" enable-rotate="{{false}}" />
+      <view class="map-bottom"><text>{{markers.length ? '显示最近 30 秒内的有效位置' : '等待成员开启共享并获得有效定位'}}</text><button bindtap="onRecenter" disabled="{{!markers.length}}" hover-class="button-hover">查看位置 ↗</button></view>
+    </view>
+
+    <view class="member-card">
+      <view class="member-heading"><text>本次共享成员</text><text>{{members.length}} / 8</text></view>
+      <view class="member-row" wx:for="{{members}}" wx:key="id"><view class="member-avatar {{item.isSelf ? 'self-avatar' : ''}}">{{item.isSelf ? '我' : '友'}}</view><view class="member-copy"><view class="member-name"><text>{{item.label}}</text><text wx:if="{{item.role === 'owner'}}" class="owner-tag">发起人</text></view><text class="member-state">{{item.stateText}}</text></view><view class="member-dot {{item.live ? 'member-live' : ''}}"></view></view>
+    </view>
+
+    <view class="own-sharing-card">
+      <view class="own-sharing-title"><text>我的位置</text><text class="own-sharing-badge">{{pendingStop ? '停止待确认' : sharing ? '共享中' : '未共享'}}</text></view>
+      <text class="own-sharing-hint">{{gpsHint}}</text>
+      <button wx:if="{{sharing || pendingStop || gpsStopFailed || ownBusy}}" class="secondary-button own-share-button" bindtap="onStopOwnSharing" disabled="{{busy}}" hover-class="button-hover">{{pendingStop || gpsStopFailed ? '重试停止共享' : ownBusy ? '取消开启' : '停止共享我的位置'}}</button>
+      <button wx:else class="primary-button own-share-button" bindtap="onStartOwnSharing" disabled="{{busy}}" hover-class="button-hover">共享我的位置 ↗</button>
+      <button wx:if="{{canOpenSettings}}" class="settings-button" bindtap="onOpenLocationSettings" hover-class="button-hover">打开定位设置 ↗</button>
+      <text class="foreground-note">离开本页或切到后台会暂停自己的位置更新，返回后可手动重新开启。</text>
+    </view>
+
+    <view class="room-actions"><button wx:if="{{canInvite}}" id="invite-friend" open-type="share" class="invite-button" hover-class="button-hover">邀请微信好友 ↗</button><button wx:if="{{isOwner}}" class="leave-button" bindtap="onCloseRoom" disabled="{{busy}}" hover-class="button-hover">结束本次共享</button><button wx:else class="leave-button" bindtap="onLeaveRoom" disabled="{{busy}}" hover-class="button-hover">退出共享地图</button></view>
+  </block>
+
+  <view wx:if="{{pageError || gpsError}}" class="share-error"><text>!</text><view><text wx:if="{{pageError}}">{{pageError}}</text><text wx:if="{{gpsError}}">{{gpsError}}</text></view></view>
+  <text class="sharing-note">邀请卡片可以转发。加入本次房间的成员可查看你主动共享的位置；停止后撤回位置，网络异常时撤回可能延迟。</text>
+</view>

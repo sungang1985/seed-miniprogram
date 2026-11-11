@@ -23,6 +23,7 @@ function readJSON(file) {
 function walk(directory) {
   if (!fs.existsSync(directory)) return []
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    if (['node_modules', 'miniprogram_npm', '.git'].includes(entry.name)) return []
     const file = path.join(directory, entry.name)
     return entry.isDirectory() ? walk(file) : [file]
   })
@@ -30,6 +31,8 @@ function walk(directory) {
 
 const project = readJSON(path.join(root, 'project.config.json'))
 assert(project.miniprogramRoot === 'miniprogram/', 'project.config.json: unexpected miniprogramRoot')
+const cloudRoot = project.cloudfunctionRoot ? path.resolve(root, project.cloudfunctionRoot) : null
+if (cloudRoot) assert(fs.existsSync(cloudRoot), 'Missing cloud function directory')
 const app = readJSON(path.join(miniRoot, 'app.json'))
 assert(Array.isArray(app.pages) && app.pages.length > 0, 'app.json: no pages declared')
 
@@ -56,7 +59,7 @@ for (const tab of tabs) {
 }
 assert(fs.existsSync(path.join(miniRoot, app.sitemapLocation || '')), 'Missing sitemap')
 
-for (const file of [...walk(miniRoot), ...walk(path.join(root, 'scripts')), ...walk(path.join(root, 'tests'))]) {
+for (const file of [...walk(miniRoot), ...walk(path.join(root, 'scripts')), ...walk(path.join(root, 'tests')), ...(cloudRoot ? walk(cloudRoot) : [])]) {
   checked += 1
   if (file.endsWith('.json')) {
     const config = readJSON(file)

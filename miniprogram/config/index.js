@@ -4,9 +4,9 @@
  * 正式发布前还需在微信公众平台配置 request 合法域名。
  */
 const environments = {
-  develop: { baseURL: '', mock: true },
-  trial: { baseURL: '', mock: true },
-  release: { baseURL: '', mock: true }
+  develop: { baseURL: '', mock: true, cloudEnv: '' },
+  trial: { baseURL: '', mock: true, cloudEnv: '' },
+  release: { baseURL: '', mock: true, cloudEnv: '' }
 };
 
 function detectEnvironment() {
@@ -25,5 +25,6 @@ module.exports = Object.assign({
   env,
   timeout: 10000,
   storagePrefix: 'seed:',
+  sharingFunctionName: 'location-share',
   version: '1.0.0'
 }, environments[env]);

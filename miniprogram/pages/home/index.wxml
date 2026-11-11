@@ -17,6 +17,7 @@
       polyline="{{trackPolyline}}"
       live-location="{{trackLocation}}"
       tracking="{{trackActive}}"
+      extra-markers="{{friendMarkers}}"
       height="{{440}}"
       bind:markertap="onMapMarkerTap"
     />
@@ -49,6 +50,24 @@
       <button wx:elif="{{track.status === 'finished'}}" class="motion-primary" bindtap="onNewTrack" hover-class="button-hover">开始新的运动 <text>↗</text></button>
     </view>
     <text class="map-hint">开始记录后启用定位，结束后停止位置监听。</text>
+  </view>
+
+  <view class="friend-share-card">
+    <section-heading eyebrow="TOGETHER / LIVE LOCATION" title="和好友共享位置" />
+    <view class="friend-share-status"><text>{{friendShare.statusLabel}}</text><text>{{friendShare.expiresText}}</text></view>
+    <text class="friend-share-hint">{{friendShare.hint}}</text>
+    <view wx:if="{{friendShare.members.length}}" class="friend-share-members">
+      <view wx:for="{{friendShare.members}}" wx:key="id" class="friend-share-member"><text>{{item.label}}</text><text>{{item.statusText}}</text></view>
+    </view>
+    <text wx:if="{{friendShare.errorMessage}}" class="friend-share-error">{{friendShare.errorMessage}}</text>
+    <button wx:if="{{!friendShare.hasRoom}}" class="motion-primary" disabled="{{!friendShare.configured || friendShare.busy}}" loading="{{friendShare.busy}}" bindtap="onCreateFriendShare" hover-class="button-hover">创建并共享我的位置 <text>↗</text></button>
+    <block wx:else>
+      <button wx:if="{{friendShare.pendingStop}}" class="motion-stop-retry" disabled="{{friendShare.busy}}" bindtap="onPauseFriendShare" hover-class="button-hover">重试停止共享</button>
+      <button wx:elif="{{friendShare.sharing}}" class="motion-secondary" disabled="{{friendShare.busy}}" bindtap="onPauseFriendShare" hover-class="button-hover">停止共享我的位置</button>
+      <button wx:else class="motion-primary" disabled="{{friendShare.busy}}" loading="{{friendShare.busy}}" bindtap="onResumeFriendShare" hover-class="button-hover">开始共享我的位置</button>
+      <view class="friend-share-actions"><button open-type="share" data-action="invite-room" disabled="{{!friendShare.canInvite || friendShare.busy}}" class="motion-secondary" hover-class="button-hover">邀请微信好友</button><button wx:if="{{friendShare.isOwner}}" bindtap="onCloseFriendShare" disabled="{{friendShare.busy}}" class="friend-share-close" hover-class="button-hover">结束全员共享</button></view>
+    </block>
+    <text class="friend-share-note">好友点击卡片加入同一张地图，各自开启后更新位置。邀请卡片可被转发，请仅发送给信任的人。</text>
   </view>
 
   <view class="ready-card">

@@ -49,7 +49,8 @@ Component({
     height: { type: Number, value: 440 },
     polyline: { type: Array, value: [] },
     liveLocation: { type: Object, value: null },
-    tracking: { type: Boolean, value: false }
+    tracking: { type: Boolean, value: false },
+    extraMarkers: { type: Array, value: [] }
   },
 
   data: {
@@ -75,7 +76,7 @@ Component({
     'latitude, longitude, scale, title, address, height'() {
       if (this._attached) this._configure(false);
     },
-    'polyline, liveLocation, tracking'() {
+    'polyline, liveLocation, tracking, extraMarkers'() {
       if (this._attached) this._applyTrackData();
     }
   },
@@ -201,12 +202,15 @@ Component({
           points: line.points.map((point) => ({ latitude: point.latitude, longitude: point.longitude }))
         }));
       const liveTitle = tracking ? '我的位置' : '最后记录位置';
+      const peers = (Array.isArray(this.properties.extraMarkers) ? this.properties.extraMarkers : [])
+        .filter((marker) => marker && Number.isInteger(marker.id) && marker.id >= 100 && validLocation(marker));
+      const ownMarkers = hasLiveLocation ? [placeMarker(2, liveLocation.latitude, liveLocation.longitude, liveTitle, true)] :
+        (tracking ? [] : [placeMarker(1, latitude, longitude, title, false)]);
       const patch = {
         mapPolyline,
         hasLiveLocation,
         following,
-        markers: hasLiveLocation ? [placeMarker(2, liveLocation.latitude, liveLocation.longitude, liveTitle, true)] :
-          (tracking ? [] : [placeMarker(1, latitude, longitude, title, false)]),
+        markers: ownMarkers.concat(peers),
         displayTitle: hasLiveLocation ? liveTitle : (tracking ? '等待你的位置' : (title || '示例地点')),
         displayAddress: hasLiveLocation ?
           (tracking ? '轨迹随你移动，实时绘制' : '本次运动的最后记录位置') :
@@ -297,6 +301,12 @@ Component({
 
     onMarkerTap(event) {
       const markerId = event.detail && event.detail.markerId;
+      if (!this._attached || !this.data.mapVisible) return;
+      const peer = this.data.markers.find((marker) => marker.id >= 100 && marker.id === Number(markerId));
+      if (peer) {
+        this.triggerEvent('markertap', { markerId: peer.id, latitude: peer.latitude, longitude: peer.longitude, title: peer.title, address: '好友共享位置' });
+        return;
+      }
       const live = this.properties.liveLocation;
       const isLiveMarker = this.data.hasLiveLocation && Number(markerId) === 2;
       if (!this._attached || !this.data.mapVisible || (!isLiveMarker && Number(markerId) !== 1)) return;
