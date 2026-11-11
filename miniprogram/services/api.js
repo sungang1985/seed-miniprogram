@@ -18,7 +18,7 @@ function getOverview() {
     status: 'ready',
     stats: [
       { label: '基础页面', value: '03' },
-      { label: '公共组件', value: '02' },
+      { label: '公共组件', value: '03' },
       { label: '运行依赖', value: '0' }
     ]
   });
@@ -32,7 +32,7 @@ function getFeatures() {
     { status: 'ready', id: 'session', title: '登录状态', description: '持久化会话与失效清理', icon: '◎' },
     { status: 'ready', id: 'config', title: '环境配置', description: '开发、体验、正式环境自动识别', icon: '⌘' },
     { status: 'ready', id: 'navigation', title: '页面导航', description: '原生 Tab 导航与页面路由', icon: '→' },
-    { status: 'ready', id: 'components', title: '公共组件', description: '复用按钮、卡片和状态展示', icon: '▦' }
+    { status: 'ready', id: 'components', title: '公共组件', description: '复用标题、地图和状态展示', icon: '▦' }
   ]);
 }
 

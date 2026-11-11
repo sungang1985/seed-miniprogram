@@ -6,7 +6,7 @@
 
 1. 打开微信开发者工具，选择「导入项目」，目录选择本仓库根目录，即 `project.config.json` 所在目录。
 2. 配置中使用 `touristappid`。导入时可选择测试号；如需预览、真机调试或上传，请使用自己的小程序 AppID。
-3. 点击「编译」。默认首页使用模拟数据，不需要配置服务器、不需要执行 npm 安装或「构建 npm」。
+3. 点击「编译」。首页自动展示原生地图及示例地点，概览接口使用模拟数据，不需要配置服务器、不需要执行 npm 安装或「构建 npm」。地图底图需要联网。
 4. 在「组件」页体验输入、按钮、计数、开关和状态反馈；在「我的」页体验演示登录与退出。
 
 使用自己的 AppID 时，将 `project.config.json` 中的 `appid` 替换为微信公众平台创建的小程序 AppID。开发者工具生成的个人配置 `project.private.config.json` 已加入忽略列表。
@@ -20,12 +20,13 @@ miniprogram/
   assets/tabbar/               原生 Tab 图标
   config/index.js              开发 / 体验 / 正式环境配置
   pages/
-    home/                      框架首页、加载与请求示例
+    home/                      原生地图、框架概览与请求示例
     components/                可操作的 UI 组件示例
     profile/                   演示登录、会话信息与缓存管理
   components/
     section-heading/           带操作入口的章节标题
     empty-state/               可复用的空状态与操作事件
+    location-map/              可复用的原生地图、标记与缩放控件
   services/
     request.js                 Promise 请求与统一错误
     api.js                     业务 API 与本地 Mock
@@ -104,10 +105,39 @@ TTL 单位为毫秒，默认 `0` 表示不过期；过期、损坏、读取失�
 ## 添加业务页面与组件
 
 - 新建页面的 `.js`、`.json`、`.wxml`、`.wxss` 文件，并在 `app.json` 的 `pages` 数组注册。普通页面使用 `wx.navigateTo`，Tab 页面使用 `wx.switchTab`。
-- 公共组件在组件 JSON 设置 `"component": true`，在页面 JSON 的 `usingComponents` 注册。已有两个组件展示了属性传入与 `triggerEvent('action')` 事件。
+- 公共组件在组件 JSON 设置 `"component": true`，在页面 JSON 的 `usingComponents` 注册。已有标题、空状态和地图三个组件，展示属性传入与自定义事件。
 - 页面内状态使用 `Page.data` 和 `setData`；跨页面会话统一从 `utils/session` 读取，页面在 `onShow` 时同步。
 - 全局颜色、间距和基础按钮样式位于 `app.wxss`，页面与隔离组件的样式位于各自的 `.wxss`。
 - 示例页面默认不参与微信搜索；发布业务页时按需修改 `sitemap.json`。
+
+## 首页地图与组件复用
+
+首页打开后直接挂载微信原生 `map`，默认展示深圳市民中心，并提供地点标记、拖动、缩放和「回到起点」。地图独立于概览接口加载，概览请求失败时仍可查看地图。
+
+修改首页 `pages/home/index.js` 中的 `mapLocation` 即可配置默认地点。经纬度使用 GCJ-02 坐标；示例展示固定地点，不读取用户当前位置，无需申请定位权限。
+
+在其他页面的 JSON 注册：
+
+```json
+{ "usingComponents": { "location-map": "/components/location-map/index" } }
+```
+
+在 WXML 中传入地点属性：
+
+```xml
+<location-map
+  latitude="{{22.543096}}"
+  longitude="{{114.057865}}"
+  scale="{{15}}"
+  title="深圳市民中心"
+  address="广东省深圳市福田区福中三路"
+  height="{{440}}"
+/>
+```
+
+`height` 的单位为 rpx；`scale` 范围为 3–20。组件提供 `ready`（地图渲染完成）、`markertap`（点击地点）和 `error`（组件初始化、操作或加载超时失败）事件，可使用 `bind:markertap="onMarkerTap"` 绑定。标记事件包含 `markerId`、`latitude`、`longitude`、`title` 和 `address`。无效坐标或加载失败时组件提供重试入口。
+
+地图实际渲染和手势交互需在微信开发者工具与真机中验证；Node 测试使用微信 API 替身，不能验证在线底图。
 
 ## 本地验证
 

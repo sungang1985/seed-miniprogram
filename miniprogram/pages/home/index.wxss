@@ -7,6 +7,8 @@
 .hero-title { font-size: 60rpx; line-height: 1.42; font-weight: 600; letter-spacing: -2.5rpx; color: #183a2b; }
 .green-text { color: #07a66a; }
 .hero-description { display: block; margin-top: 17rpx; color: #8b998f; font-size: 25rpx; letter-spacing: 1rpx; }
+.home-map-section { margin: 6rpx 0 36rpx; }
+.map-hint { display: block; margin-top: 14rpx; text-align: center; color: #8b998f; font-size: 21rpx; }
 .ready-card { padding: 31rpx 34rpx 27rpx; border-radius: 28rpx; background: #0b4c38; color: #fff; overflow: hidden; position: relative; }
 .ready-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
 .ready-icon { height: 58rpx; width: 58rpx; background: #1c654c; border: 1rpx solid #34795f; border-radius: 19rpx; display: flex; align-items: center; justify-content: center; color: #b2efbe; font-size: 31rpx; }

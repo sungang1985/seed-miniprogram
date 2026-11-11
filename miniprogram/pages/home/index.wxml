@@ -6,6 +6,20 @@
     <text class="hero-description">轻装上阵，把时间留给创造。</text>
   </view>
 
+  <view class="home-map-section">
+    <section-heading eyebrow="MAP / EXPLORER" title="从这里，开始探索" />
+    <location-map
+      latitude="{{mapLocation.latitude}}"
+      longitude="{{mapLocation.longitude}}"
+      scale="{{mapLocation.scale}}"
+      title="{{mapLocation.title}}"
+      address="{{mapLocation.address}}"
+      height="{{440}}"
+      bind:markertap="onMapMarkerTap"
+    />
+    <text class="map-hint">示例地点 · 支持拖动、缩放与回到起点</text>
+  </view>
+
   <view class="ready-card">
     <view class="ready-top"><view class="ready-icon">✓</view><view class="ready-badge">READY TO BUILD</view></view>
     <text class="ready-title">基础框架已就绪</text>

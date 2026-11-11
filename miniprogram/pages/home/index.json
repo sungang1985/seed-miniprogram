@@ -3,6 +3,7 @@
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark",
   "usingComponents": {
+    "location-map": "/components/location-map/index",
     "section-heading": "/components/section-heading/index",
     "empty-state": "/components/empty-state/index"
   }

@@ -1,0 +1,50 @@
+<view class="location-card">
+  <view class="map-viewport" style="height: {{mapHeight}}rpx;">
+    <map
+      wx:if="{{mapVisible}}"
+      id="location-map"
+      class="native-map"
+      latitude="{{centerLatitude}}"
+      longitude="{{centerLongitude}}"
+      scale="{{currentScale}}"
+      markers="{{markers}}"
+      show-location="{{false}}"
+      show-compass="{{false}}"
+      show-scale="{{true}}"
+      enable-scroll="{{true}}"
+      enable-zoom="{{true}}"
+      enable-rotate="{{false}}"
+      enable-overlooking="{{false}}"
+      bindupdated="onMapUpdated"
+      bindregionchange="onRegionChange"
+      bindmarkertap="onMarkerTap"
+      bindcallouttap="onMarkerTap"
+    />
+    <view wx:if="{{errorMessage}}" class="map-fallback">
+      <view class="fallback-symbol">⌖</view>
+      <text class="fallback-title">地图暂未就绪</text>
+      <text class="fallback-description">{{errorMessage}}</text>
+      <button class="retry-button" bindtap="onRetry" hover-class="button-hover">重新加载 ↻</button>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-status"><view class="status-dot"></view><text>正在加载地图…</text></view>
+
+  <view class="location-info">
+    <view class="place-marker">⌖</view>
+    <view class="place-copy">
+      <text class="place-title">{{title || '示例地点'}}</text>
+      <text wx:if="{{address}}" class="place-address">{{address}}</text>
+    </view>
+    <text class="place-tag">示例地点</text>
+  </view>
+
+  <view class="map-actions">
+    <view class="zoom-controls">
+      <button class="zoom-button" bindtap="onZoomOut" disabled="{{loading || !mapVisible || currentScale === 3}}" aria-label="缩小地图" hover-class="button-hover">−</button>
+      <text class="zoom-label">缩放</text>
+      <button class="zoom-button" bindtap="onZoomIn" disabled="{{loading || !mapVisible || currentScale === 20}}" aria-label="放大地图" hover-class="button-hover">+</button>
+    </view>
+    <button class="recenter-button" bindtap="onRecenter" disabled="{{loading || !mapVisible}}" hover-class="button-hover">回到起点 <text>↗</text></button>
+  </view>
+</view>

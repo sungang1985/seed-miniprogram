@@ -13,11 +13,19 @@ Page({
     version: config.version,
     environmentLabel: { develop: '开发环境', trial: '体验环境', release: '正式环境' }[config.env] || config.env,
     mock: config.mock,
+    // Native maps use GCJ-02 coordinates. Replace this example with your own place.
+    mapLocation: {
+      latitude: 22.543096,
+      longitude: 114.057865,
+      scale: 15,
+      title: '深圳市民中心',
+      address: '广东省深圳市福田区福中三路'
+    },
     features: DEFAULT_FEATURES,
     loading: true,
     requesting: false,
     errorMessage: '',
-    stats: [{ value: '03', label: '基础页面' }, { value: '02', label: '公共组件' }, { value: '0', label: '运行依赖' }],
+    stats: [{ value: '03', label: '基础页面' }, { value: '03', label: '公共组件' }, { value: '0', label: '运行依赖' }],
     requestResult: ''
   },
 
@@ -50,6 +58,10 @@ Page({
 
   onOpenComponents() {
     wx.switchTab({ url: '/pages/components/index' });
+  },
+
+  onMapMarkerTap(event) {
+    wx.showToast({ title: event.detail.title || this.data.mapLocation.title, icon: 'none' });
   },
 
   async onTestRequest() {
