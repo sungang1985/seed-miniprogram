@@ -28,7 +28,16 @@ function loadPage(name, overrides = {}) {
     }, overrides.api),
     '../../config': { env: 'develop', mock: true, version: '1.0.0' },
     '../../utils/session': Object.assign({ getSession: () => null }, overrides.session),
-    '../../utils/storage': Object.assign({ clear: () => true }, overrides.storage)
+    '../../utils/storage': Object.assign({ get: (key, fallback) => fallback, set: () => true, clear: () => true }, overrides.storage),
+    '../../services/location-tracker': {
+      createTracker() {
+        const state = { status: 'idle', segments: [], distanceMeters: 0, durationMs: 0,
+          currentSpeedMps: 0, averageSpeedMps: 0, pointCount: 0, currentLocation: null,
+          errorMessage: '', errorCode: '', waitingForLocation: false };
+        return { snapshot: () => state, start: async () => state, pause: async () => state,
+          resume: async () => state, finish: async () => state, destroy: async () => {} };
+      }
+    }
   };
   const filename = path.join(__dirname, '../miniprogram/pages', name, 'index.js');
   const context = vm.createContext({

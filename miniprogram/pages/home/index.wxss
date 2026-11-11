@@ -9,6 +9,43 @@
 .hero-description { display: block; margin-top: 17rpx; color: #8b998f; font-size: 25rpx; letter-spacing: 1rpx; }
 .home-map-section { margin: 6rpx 0 36rpx; }
 .map-hint { display: block; margin-top: 14rpx; text-align: center; color: #8b998f; font-size: 21rpx; }
+.motion-panel { margin-top: 22rpx; padding: 28rpx; border: 1rpx solid #dfeae2; border-radius: 25rpx; background: #fff; }
+.motion-status-row { display: flex; align-items: center; justify-content: space-between; }
+.motion-status { display: flex; align-items: center; color: #768e7f; font-size: 23rpx; font-weight: 500; }
+.motion-status-dot { width: 10rpx; height: 10rpx; margin-right: 11rpx; border-radius: 50%; background: #a0b2a6; }
+.status-recording { color: #078855; }.status-recording .motion-status-dot { background: #07a66a; box-shadow: 0 0 0 7rpx #e5f5eb; }
+.status-paused { color: #ad8851; }.status-paused .motion-status-dot { background: #c19c63; }
+.status-starting { color: #54836c; }.status-finished { color: #4a7660; }
+.motion-signal { color: #93a197; font-size: 20rpx; }
+.motion-main-stats { display: flex; align-items: flex-end; padding: 30rpx 0 23rpx; }
+.motion-main-stat { min-width: 0; flex: 1; }
+.motion-metric-label { display: block; color: #85998b; font-size: 22rpx; }
+.motion-metric-label text { margin-left: 6rpx; color: #a4b3a8; font-size: 19rpx; }
+.motion-distance { display: block; margin-top: 2rpx; font-family: Arial, sans-serif; font-size: 61rpx; font-weight: 600; letter-spacing: -1rpx; line-height: 1.4; color: #244c35; }
+.duration-stat { padding-left: 25rpx; border-left: 1rpx solid #e8eee9; }
+.motion-duration { display: block; margin-top: 17rpx; padding-bottom: 8rpx; color: #2c4e39; font-family: Arial, sans-serif; font-size: 33rpx; letter-spacing: .5rpx; font-variant-numeric: tabular-nums; }
+.motion-extra-stats { display: flex; justify-content: space-between; padding: 23rpx 0; border-top: 1rpx solid #edf2ed; border-bottom: 1rpx solid #edf2ed; }
+.motion-extra-stats > view { flex: 1; min-width: 0; text-align: center; border-right: 1rpx solid #edf2ed; }
+.motion-extra-stats > view:last-child { border-right: 0; }
+.motion-extra-value { display: block; color: #476650; font-size: 29rpx; font-weight: 500; font-family: Arial, sans-serif; }
+.motion-extra-value text { font-size: 18rpx; color: #93a896; font-weight: 400; }
+.motion-extra-label { display: block; margin-top: 8rpx; color: #95a497; font-size: 20rpx; }
+.motion-hint { display: block; color: #87998b; font-size: 21rpx; line-height: 1.75; padding: 21rpx 0; }
+.motion-save-message { display: block; margin: -6rpx 0 20rpx; color: #708d7a; font-size: 21rpx; line-height: 1.7; }
+.motion-settings { display: flex; align-items: center; justify-content: center; width: 100%; padding: 17rpx; margin: 0 0 18rpx; border: 1rpx solid #dbe9df; border-radius: 14rpx; background: #f4f9f5; color: #518267; font-size: 23rpx; line-height: 1.6; }
+.motion-settings text { margin-left: 12rpx; }
+.motion-stop-retry { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 85rpx; padding: 21rpx 16rpx; margin: 0; border: 1rpx solid #e9d8ba; border-radius: 16rpx; background: #faf0df; color: #946e3e; font-size: 26rpx; line-height: 1.5; }
+.motion-stop-retry text { margin-left: 14rpx; }
+.motion-settings::after, .motion-stop-retry::after { border: 0; }
+.motion-error { display: flex; align-items: flex-start; gap: 12rpx; margin-top: 20rpx; padding: 16rpx 18rpx; background: #faf2e7; border: 1rpx solid #efdfc4; border-radius: 13rpx; color: #997845; font-size: 22rpx; line-height: 1.7; }
+.motion-error > text:first-child { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 27rpx; height: 27rpx; margin-top: 5rpx; border: 1rpx solid #c6ab7f; border-radius: 50%; line-height: 1; font-size: 18rpx; }
+.motion-controls { display: flex; gap: 16rpx; }
+.motion-controls button { flex: 1; min-width: 0; }
+.motion-primary, .motion-secondary { display: flex; align-items: center; justify-content: center; min-height: 85rpx; margin: 0; padding: 21rpx 16rpx; border-radius: 16rpx; font-size: 26rpx; line-height: 1.5; font-weight: 500; }
+.motion-primary { background: #079967; color: #fff; }.motion-primary[disabled] { background: #6ab594; color: #f8fffa; }
+.motion-primary text { margin-left: 17rpx; }
+.motion-secondary { background: #edf5ef; color: #41805d; border: 1rpx solid #dfebe2; }
+.motion-primary::after, .motion-secondary::after { border: 0; }
 .ready-card { padding: 31rpx 34rpx 27rpx; border-radius: 28rpx; background: #0b4c38; color: #fff; overflow: hidden; position: relative; }
 .ready-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
 .ready-icon { height: 58rpx; width: 58rpx; background: #1c654c; border: 1rpx solid #34795f; border-radius: 19rpx; display: flex; align-items: center; justify-content: center; color: #b2efbe; font-size: 31rpx; }

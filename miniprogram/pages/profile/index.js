@@ -72,7 +72,7 @@ Page({
     if (this.data.loggingIn) return;
     wx.showModal({
       title: '清空缓存并退出？',
-      content: '将删除本小程序保存的本地缓存和体验登录状态。此操作不会影响微信中的其他数据。',
+      content: '将删除本小程序保存的本地缓存、最近一次运动轨迹和体验登录状态。此操作不会影响微信中的其他数据。',
       confirmText: '确认清空',
       confirmColor: '#07a66a',
       success: (result) => {

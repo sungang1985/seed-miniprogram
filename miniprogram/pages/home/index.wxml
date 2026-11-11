@@ -2,22 +2,53 @@
   <view class="brand-row"><text class="eyebrow">SEED / MINI PROGRAM</text><view class="live-tag"><view class="live-dot"></view>运行就绪</view></view>
 
   <view class="hero">
-    <view class="hero-title"><view>每个好想法，</view><view>都有一个<text class="green-text">起点。</text></view></view>
-    <text class="hero-description">轻装上阵，把时间留给创造。</text>
+    <view class="hero-title"><view>迈出的每一步，</view><view>都有<text class="green-text">迹可循。</text></view></view>
+    <text class="hero-description">开始一段运动，让地图记录你的每一步。</text>
   </view>
 
   <view class="home-map-section">
-    <section-heading eyebrow="MAP / EXPLORER" title="从这里，开始探索" />
+    <section-heading eyebrow="MOVE / LIVE TRACK" title="实时运动轨迹" />
     <location-map
       latitude="{{mapLocation.latitude}}"
       longitude="{{mapLocation.longitude}}"
       scale="{{mapLocation.scale}}"
       title="{{mapLocation.title}}"
       address="{{mapLocation.address}}"
+      polyline="{{trackPolyline}}"
+      live-location="{{trackLocation}}"
+      tracking="{{trackActive}}"
       height="{{440}}"
       bind:markertap="onMapMarkerTap"
     />
-    <text class="map-hint">示例地点 · 支持拖动、缩放与回到起点</text>
+    <view class="motion-panel">
+      <view class="motion-status-row">
+        <view class="motion-status status-{{track.status}}"><view class="motion-status-dot"></view><text>{{track.statusLabel}}</text></view>
+        <text class="motion-signal">精度 {{track.accuracyText}}</text>
+      </view>
+
+      <view class="motion-main-stats">
+        <view class="motion-main-stat"><text class="motion-metric-label">累计距离 <text>公里</text></text><text class="motion-distance">{{track.distanceText}}</text></view>
+        <view class="motion-main-stat duration-stat"><text class="motion-metric-label">运动时长</text><text class="motion-duration">{{track.durationText}}</text></view>
+      </view>
+      <view class="motion-extra-stats">
+        <view><text class="motion-extra-value">{{track.speedText}} <text>km/h</text></text><text class="motion-extra-label">当前速度</text></view>
+        <view><text class="motion-extra-value">{{track.averageSpeedText}} <text>km/h</text></text><text class="motion-extra-label">平均速度</text></view>
+        <view><text class="motion-extra-value">{{track.pointCount}} <text>个</text></text><text class="motion-extra-label">轨迹点</text></view>
+      </view>
+
+      <view wx:if="{{track.errorMessage}}" class="motion-error"><text>!</text><text>{{track.errorMessage}}</text></view>
+      <text class="motion-hint">{{track.hint}}</text>
+      <text wx:if="{{track.saveMessage}}" class="motion-save-message">{{track.saveMessage}}</text>
+      <button wx:if="{{track.canOpenSettings}}" class="motion-settings" bindtap="onOpenLocationSettings" hover-class="button-hover">打开定位设置 <text>↗</text></button>
+
+      <button wx:if="{{track.nativeStopFailed}}" class="motion-stop-retry" bindtap="onFinishTrack" hover-class="button-hover">重试停止定位 <text>↻</text></button>
+      <button wx:elif="{{track.status === 'idle'}}" class="motion-primary" bindtap="onStartTrack" hover-class="button-hover">开始记录 <text>↗</text></button>
+      <view wx:elif="{{track.status === 'starting'}}" class="motion-controls"><button class="motion-primary" loading disabled>正在获取位置</button><button class="motion-secondary" bindtap="onPauseTrack" hover-class="button-hover">取消定位</button></view>
+      <view wx:elif="{{track.status === 'recording'}}" class="motion-controls"><button class="motion-secondary" bindtap="onPauseTrack" hover-class="button-hover">暂停记录</button><button class="motion-primary" bindtap="onFinishTrack" hover-class="button-hover">结束运动</button></view>
+      <view wx:elif="{{track.status === 'paused'}}" class="motion-controls"><button class="motion-primary" bindtap="onResumeTrack" hover-class="button-hover">继续记录</button><button class="motion-secondary" bindtap="onFinishTrack" hover-class="button-hover">结束运动</button></view>
+      <button wx:elif="{{track.status === 'finished'}}" class="motion-primary" bindtap="onNewTrack" hover-class="button-hover">开始新的运动 <text>↗</text></button>
+    </view>
+    <text class="map-hint">开始记录后启用定位，结束后停止位置监听。</text>
   </view>
 
   <view class="ready-card">

@@ -8,6 +8,7 @@
       longitude="{{centerLongitude}}"
       scale="{{currentScale}}"
       markers="{{markers}}"
+      polyline="{{mapPolyline}}"
       show-location="{{false}}"
       show-compass="{{false}}"
       show-scale="{{true}}"
@@ -33,10 +34,10 @@
   <view class="location-info">
     <view class="place-marker">⌖</view>
     <view class="place-copy">
-      <text class="place-title">{{title || '示例地点'}}</text>
-      <text wx:if="{{address}}" class="place-address">{{address}}</text>
+      <text class="place-title">{{displayTitle}}</text>
+      <text wx:if="{{displayAddress}}" class="place-address">{{displayAddress}}</text>
     </view>
-    <text class="place-tag">示例地点</text>
+    <text class="place-tag {{tracking ? 'live-tag' : ''}}">{{placeTag}}</text>
   </view>
 
   <view class="map-actions">
@@ -45,6 +46,7 @@
       <text class="zoom-label">缩放</text>
       <button class="zoom-button" bindtap="onZoomIn" disabled="{{loading || !mapVisible || currentScale === 20}}" aria-label="放大地图" hover-class="button-hover">+</button>
     </view>
-    <button class="recenter-button" bindtap="onRecenter" disabled="{{loading || !mapVisible}}" hover-class="button-hover">回到起点 <text>↗</text></button>
+    <button class="recenter-button" bindtap="onRecenter" disabled="{{loading || !mapVisible || (tracking && !hasLiveLocation)}}" hover-class="button-hover">{{recenterLabel}} <text>↗</text></button>
   </view>
+  <text wx:if="{{followMessage}}" class="follow-message">{{followMessage}}</text>
 </view>

@@ -38,6 +38,12 @@
     ]
   },
   "style": "v2",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "在你开始运动记录后，用于持续绘制自己的运动轨迹并计算距离和速度"
+    }
+  },
+  "requiredPrivateInfos": ["startLocationUpdate", "onLocationChange"],
   "lazyCodeLoading": "requiredComponents",
   "sitemapLocation": "sitemap.json"
 }

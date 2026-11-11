@@ -15,6 +15,8 @@
 .place-title { display: block; font-size: 28rpx; color: #294735; font-weight: 500; }
 .place-address { display: block; font-size: 21rpx; color: #8e9c91; line-height: 1.6; margin-top: 5rpx; }
 .place-tag { flex-shrink: 0; font-size: 18rpx; color: #7c9a85; background: #f0f6f1; padding: 5rpx 12rpx; border-radius: 9rpx; margin-left: 12rpx; }
+.place-tag.live-tag { color: #078650; background: #e3f5e9; }
+.follow-message { display: block; padding: 0 26rpx 22rpx; color: #9b784a; font-size: 21rpx; }
 .map-actions { display: flex; justify-content: space-between; align-items: center; margin: 0 26rpx; padding: 19rpx 0 23rpx; border-top: 1rpx solid #edf1ed; }
 .zoom-controls { display: flex; align-items: center; }
 .zoom-button { display: flex; align-items: center; justify-content: center; width: 57rpx; height: 57rpx; padding: 0; margin: 0; line-height: 1; font-size: 35rpx; border-radius: 13rpx; background: #f0f6f1; color: #4c8a65; }

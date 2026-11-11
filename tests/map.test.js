@@ -282,3 +282,108 @@ test('region change reads missing native scale but ignores callbacks from a prev
   pending[1]({ scale: 4 });
   assert.equal(component.data.currentScale, 15);
 });
+
+test('live fixes update the actual marker without restarting the map or resetting user zoom', () => {
+  const { component, calls, events, timers, updateProps } = loadMap();
+  component.onMapUpdated();
+  component.onRegionChange({ detail: { type: 'end', scale: 12 } });
+  updateProps({ liveLocation: { latitude: 0, longitude: 0 }, tracking: true });
+  assert.equal(component.data.markers[0].id, 2);
+  assert.equal(component.data.markers[0].latitude, 0);
+  assert.equal(component.data.displayTitle, '我的位置');
+  assert.equal(component.data.loading, false);
+  assert.equal(component.data.currentScale, 12);
+  updateProps({ liveLocation: { latitude: 0.001, longitude: 0.002 } });
+  assert.equal(component.data.markers[0].longitude, 0.002);
+  assert.equal(component.data.currentScale, 12);
+  assert.equal(events.filter((event) => event.name === 'ready').length, 1);
+  assert.equal(calls.filter((call) => call.method === 'createMapContext').length, 1);
+  assert.equal(timers.size, 0);
+  const move = calls.filter((call) => call.method === 'moveToLocation').at(-1);
+  assert.equal(move.options.latitude, 0.001);
+  assert.equal(move.options.longitude, 0.002);
+});
+
+test('separate route segments stay separate and invalid segments are never bridged', () => {
+  const first = [{ latitude: 22.5, longitude: 114 }, { latitude: 22.501, longitude: 114.001 }];
+  const second = [{ latitude: 22.6, longitude: 114.1 }, { latitude: 22.601, longitude: 114.101 }];
+  const { component, updateProps } = loadMap();
+  component.onMapUpdated();
+  updateProps({ polyline: [{ points: first }, { points: second }, { points: [first[0], { latitude: 99, longitude: 114 }, second[0]] }] });
+  assert.equal(component.data.mapPolyline.length, 2);
+  assert.deepEqual(component.data.mapPolyline[0].points, first);
+  assert.deepEqual(component.data.mapPolyline[1].points, second);
+  assert.equal(component.data.loading, false);
+});
+
+test('waiting for the first fix never presents the example marker as the user position', () => {
+  const { component } = loadMap({ tracking: true });
+  assert.equal(component.data.markers.length, 0);
+  assert.equal(component.data.hasLiveLocation, false);
+  assert.equal(component.data.displayTitle, '等待你的位置');
+  assert.equal(component.data.mapPolyline.length, 0);
+});
+
+test('gesture pan pauses following and the follow button explicitly centers the latest real position', () => {
+  const { component, calls, updateProps } = loadMap({ liveLocation: { latitude: 22.5, longitude: 114 }, tracking: true });
+  component.onMapUpdated();
+  component.onRegionChange({ detail: { type: 'end', causedBy: 'update', scale: 15 } });
+  assert.equal(component.data.following, true);
+  component.onRegionChange({ detail: { type: 'end', causedBy: 'drag', scale: 14 } });
+  assert.equal(component.data.following, false);
+  const moveCount = calls.filter((call) => call.method === 'moveToLocation').length;
+  updateProps({ liveLocation: { latitude: 22.501, longitude: 114.001 } });
+  assert.equal(calls.filter((call) => call.method === 'moveToLocation').length, moveCount);
+  component.onRecenter();
+  assert.equal(component.data.following, true);
+  const move = calls.filter((call) => call.method === 'moveToLocation').at(-1);
+  assert.equal(move.options.latitude, 22.501);
+  assert.equal(move.options.longitude, 114.001);
+  assert.equal(component.data.currentScale, 14);
+});
+
+test('restored or paused positions are labelled as the last record rather than a current GPS fix', () => {
+  const { component, events, updateProps } = loadMap({ liveLocation: { latitude: 31.2, longitude: 121.4 }, tracking: true });
+  component.onMapUpdated();
+  updateProps({ tracking: false });
+  assert.equal(component.data.displayTitle, '最后记录位置');
+  component.onMarkerTap({ detail: { markerId: 2 } });
+  assert.equal(events.at(-1).name, 'markertap');
+  assert.equal(events.at(-1).detail.latitude, 31.2);
+  assert.equal(events.at(-1).detail.title, '最后记录位置');
+});
+
+test('follow failures preserve the rendered route and stale movement failures are ignored', () => {
+  const pending = [];
+  const { component, events, updateProps } = loadMap({ liveLocation: { latitude: 22.5, longitude: 114 }, tracking: true }, {
+    moveToLocation(options) { pending.push(options.fail); }
+  });
+  component.onMapUpdated();
+  updateProps({ liveLocation: { latitude: 22.501, longitude: 114.001 } });
+  pending[0]();
+  assert.equal(component.data.following, true);
+  assert.equal(events.filter((event) => event.name === 'error').length, 0);
+  pending[1]();
+  assert.equal(component.data.mapVisible, true);
+  assert.equal(component.data.loading, false);
+  assert.equal(component.data.errorMessage, '');
+  assert.equal(component.data.following, false);
+  assert.equal(events.at(-1).detail.code, 'MAP_FOLLOW_FAILED');
+});
+
+test('clearing a completed track restores the configured place without letting an old follow failure interfere', () => {
+  const failures = [];
+  const { component, calls, events, updateProps } = loadMap({ liveLocation: { latitude: 31.2, longitude: 121.4 } }, {
+    moveToLocation(options) { failures.push(options.fail); }
+  });
+  component.onMapUpdated();
+  updateProps({ liveLocation: null, polyline: [] });
+  assert.equal(component.data.markers[0].id, 1);
+  assert.equal(component.data.displayTitle, '深圳市民中心');
+  const move = calls.filter((call) => call.method === 'moveToLocation').at(-1);
+  assert.equal(move.options.latitude, 22.543096);
+  assert.equal(move.options.longitude, 114.057865);
+  failures[0]();
+  assert.equal(component.data.following, true);
+  assert.equal(events.filter((event) => event.name === 'error').length, 0);
+});
