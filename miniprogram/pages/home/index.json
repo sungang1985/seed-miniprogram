@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "起点 Seed",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "section-heading": "/components/section-heading/index",
+    "empty-state": "/components/empty-state/index"
+  }
+}

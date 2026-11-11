@@ -1,0 +1,41 @@
+<view class="page home-page">
+  <view class="brand-row"><text class="eyebrow">SEED / MINI PROGRAM</text><view class="live-tag"><view class="live-dot"></view>运行就绪</view></view>
+
+  <view class="hero">
+    <view class="hero-title"><view>每个好想法，</view><view>都有一个<text class="green-text">起点。</text></view></view>
+    <text class="hero-description">轻装上阵，把时间留给创造。</text>
+  </view>
+
+  <view class="ready-card">
+    <view class="ready-top"><view class="ready-icon">✓</view><view class="ready-badge">READY TO BUILD</view></view>
+    <text class="ready-title">基础框架已就绪</text>
+    <text class="ready-description">页面、组件与服务，已经为你备好。</text>
+    <view class="ready-bottom"><text>原生开发 · 轻量架构</text><text>v{{version}} ↗</text></view>
+    <view class="orbit orbit-one"></view><view class="orbit orbit-two"></view>
+  </view>
+
+  <view class="stats-row"><view class="stat" wx:for="{{stats}}" wx:key="label"><text class="stat-value">{{item.value}}</text><text class="stat-label">{{item.label}}</text></view></view>
+
+  <view class="section capabilities-section">
+    <section-heading eyebrow="BUILT-IN CAPABILITIES" title="让开始更简单" action-text="组件示例" bind:action="onOpenComponents" />
+    <view wx:if="{{errorMessage}}" class="error-card"><empty-state title="暂时没有连接上" description="{{errorMessage}}" action-text="重新加载" bind:action="onRetry" /></view>
+    <view wx:else class="feature-grid">
+      <view class="feature-card" wx:for="{{features}}" wx:key="id">
+        <view class="feature-symbol {{item.tone}}">{{item.symbol}}</view>
+        <text class="feature-title">{{item.title}}</text>
+        <text class="feature-description">{{item.description}}</text>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="loading-label">正在读取框架配置…</view>
+  </view>
+
+  <view class="request-card">
+    <view class="request-title-row"><view class="code-icon">&lt;/&gt;</view><view class="request-copy"><text class="request-title">让数据跑起来</text><text class="request-description">{{mock ? '当前使用本地模拟数据，无需后端' : '当前使用已配置的 API 服务'}}</text></view></view>
+    <button class="request-button" loading="{{requesting}}" disabled="{{requesting}}" bindtap="onTestRequest" hover-class="button-hover">{{requesting ? '请求中…' : '测试一次请求'}}<text wx:if="{{!requesting}}">→</text></button>
+    <text wx:if="{{requestResult}}" class="request-result">{{requestResult}}</text>
+  </view>
+
+  <view class="guide-card"><view class="guide-index">01</view><view class="guide-body"><text class="guide-title">你的下一步，由你定义</text><text class="guide-description">从修改首页开始，构建你的第一个小程序。</text><button class="copy-link" bindtap="onCopyPath" hover-class="link-hover">复制页面路径 <text>↗</text></button></view></view>
+
+  <view class="page-footer"><view class="footer-line"></view><text>小小起点，无限可能</text><view class="footer-line"></view></view>
+</view>

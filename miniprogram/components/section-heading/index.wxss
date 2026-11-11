@@ -1,0 +1,7 @@
+.heading { display: flex; align-items: flex-end; justify-content: space-between; margin: 0 0 24rpx; }
+.eyebrow { display: block; color: #84938b; font-size: 19rpx; letter-spacing: 3rpx; line-height: 1.4; margin-bottom: 10rpx; font-weight: 600; }
+.title { display: block; color: #142b26; font-size: 36rpx; font-weight: 600; line-height: 1.3; letter-spacing: -1rpx; }
+.action { padding: 8rpx 0 4rpx 20rpx; margin: 0; border: 0; background: transparent; border-radius: 0; color: #38816a; font-size: 23rpx; line-height: 1.6; }
+.action::after { border: 0; }
+.arrow { margin-left: 9rpx; font-size: 29rpx; }
+.action-hover { opacity: .6; }

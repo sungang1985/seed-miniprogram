@@ -1,0 +1,25 @@
+<view class="page profile-page">
+  <text class="page-eyebrow">YOUR LITTLE WORKSPACE</text>
+  <view class="profile-heading"><view><text class="profile-heading-title">你好，创造者。</text><text class="profile-heading-description">让每一个灵感，都有一个好的开始。</text></view><view class="profile-leaf"><view></view></view></view>
+
+  <view class="account-card">
+    <view class="account-top"><view class="avatar">{{loggedIn ? (user.avatarText || 'S') : 'S'}}<view class="avatar-dot"></view></view><view class="account-copy"><view class="account-name-row"><text class="account-name">{{loggedIn ? (user.nickname || '用户') : '从这里，认识你'}}</text><text wx:if="{{loggedIn && mock}}" class="demo-badge">DEMO</text></view><text class="account-description">{{loggedIn ? '登录状态已保存，重启后仍可继续' : '先登录，再探索更多可能'}}</text></view></view>
+    <button wx:if="{{!loggedIn}}" class="login-button" bindtap="onDemoLogin" loading="{{loggingIn}}" disabled="{{loggingIn || !mock}}" hover-class="button-hover">{{loggingIn ? '正在进入…' : (mock ? '体验登录' : '登录功能待接入')}}<text wx:if="{{!loggingIn && mock}}">↗</text></button>
+    <button wx:else class="logout-button" bindtap="onLogout" hover-class="button-hover">{{mock ? '退出体验账号' : '退出登录'}} <text>↗</text></button>
+    <view class="demo-note"><view class="note-dot"></view><text>{{mock ? '本地演示账号 · 无需授权微信个人信息' : '当前使用已配置的 API 服务'}}</text></view>
+  </view>
+  <view wx:if="{{profileError}}" class="profile-error"><text>{{profileError}}</text><button bindtap="loadProfile" hover-class="button-hover">重试 ↻</button></view>
+
+  <view class="info-section">
+    <section-heading eyebrow="PROJECT OVERVIEW" title="项目概览" />
+    <view class="info-card"><view class="info-row"><view class="info-label"><view class="info-symbol">◉</view><text>运行环境</text></view><view class="env-tag"><view></view>{{environmentLabel}}</view></view><view class="info-row"><view class="info-label"><view class="info-symbol code-symbol">{ }</view><text>数据模式</text></view><text class="info-value">{{mock ? '本地 Mock' : 'API 接口'}}</text></view><view class="info-row last"><view class="info-label"><view class="info-symbol">▦</view><text>版本信息</text></view><text class="version-value">v{{version}}</text></view></view>
+  </view>
+
+  <view class="info-section">
+    <section-heading eyebrow="TOOLS &amp; RESOURCES" title="工具与帮助" />
+    <view class="info-card tool-card"><button class="tool-row" bindtap="onShowGuide" hover-class="row-hover"><view class="info-label"><view class="info-symbol">▤</view><text>开始使用</text></view><text class="row-arrow">↗</text></button><button class="tool-row" bindtap="onClearCache" disabled="{{loggingIn}}" hover-class="row-hover"><view class="info-label"><view class="info-symbol">↻</view><text>清空缓存并退出</text></view><text class="row-arrow">↗</text></button><button class="tool-row last" bindtap="onShowAbout" hover-class="row-hover"><view class="info-label"><view class="info-symbol about-symbol">i</view><text>关于起点</text></view><text class="row-arrow">↗</text></button></view>
+  </view>
+
+  <view class="quote-card"><text class="quote-mark">“</text><view class="quote-text"><view>不必等到准备万全，</view><view>现在，就是最好的起点。</view></view><view class="quote-bottom"><view></view><text>START SMALL, BUILD SOMETHING.</text></view></view>
+  <view class="brand-footer"><view class="brand-mark">S<view></view></view><text>SEED</text><text class="brand-footer-dot">·</text><text>为创造而生</text></view>
+</view>

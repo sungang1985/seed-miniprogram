@@ -1,0 +1,10 @@
+node_modules/
+coverage/
+.DS_Store
+*.log
+project.private.config.json
+.env
+.env.*
+!.env.example
+miniprogram/miniprogram_npm/
+/seed-miniprogram.zip

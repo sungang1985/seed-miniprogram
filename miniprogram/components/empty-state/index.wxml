@@ -1,0 +1,6 @@
+<view class="empty-state">
+  <view class="illustration"><view class="sheet sheet-back"></view><view class="sheet sheet-front"><view class="sheet-line"></view><view class="sheet-line short"></view><view class="sheet-dot"></view></view><view class="spark">+</view></view>
+  <text class="title">{{title}}</text>
+  <text class="description">{{description}}</text>
+  <button wx:if="{{actionText}}" class="action" bindtap="onAction" hover-class="action-hover">{{actionText}} <text>↗</text></button>
+</view>

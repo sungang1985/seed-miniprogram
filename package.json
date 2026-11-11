@@ -1,0 +1,15 @@
+{
+  "name": "seed-wechat-miniprogram",
+  "version": "1.0.0",
+  "private": true,
+  "description": "起点 Seed · 微信原生小程序基础框架",
+  "scripts": {
+    "icons": "node scripts/generate-icons.js",
+    "check": "node scripts/check-project.js",
+    "test": "node scripts/run-tests.js",
+    "verify": "npm run check && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

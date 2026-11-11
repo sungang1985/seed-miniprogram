@@ -1,0 +1,43 @@
+<view class="page components-page">
+  <text class="page-eyebrow">COMPONENT PLAYGROUND</text>
+  <view class="page-title"><view>好用的基础，</view><view>顺手的体验。</view></view>
+  <text class="page-description">每个细节，都可以亲手试一试。</text>
+
+  <view class="demo-section">
+    <section-heading eyebrow="01 / ACTIONS" title="按钮与状态" />
+    <view class="demo-card">
+      <view class="card-caption"><text>一个点击，一个回应</text><view class="mini-tag">原生交互</view></view>
+      <button class="demo-primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onPrimaryTap" hover-class="button-hover">{{submitting ? '正在处理…' : '试试异步操作'}}<text wx:if="{{!submitting}}">↗</text></button>
+      <view class="button-pair"><button class="demo-secondary" bindtap="onToastTap" hover-class="button-hover">轻提示</button><button class="demo-secondary" disabled>不可用状态</button></view>
+      <text class="help-text">点击主按钮，观察 loading 与防重复提交状态。</text>
+    </view>
+  </view>
+
+  <view class="demo-section">
+    <section-heading eyebrow="02 / INPUTS" title="输入与选择" />
+    <view class="demo-card">
+      <view class="field-label"><text>怎么称呼你？</text><text class="field-optional">最多 20 字</text></view>
+      <view class="input-row"><input class="name-input" value="{{name}}" bindinput="onNameInput" maxlength="20" placeholder="写下你的名字" placeholder-style="color: #b2bcb4;" confirm-type="done" bindconfirm="onSubmitName" /><button class="input-submit" bindtap="onSubmitName" hover-class="button-hover">打招呼 ↗</button></view>
+      <view class="control-row"><view><text class="control-title">选择一个数字</text><text class="control-description">边界范围 0 – 99</text></view><view class="stepper"><button data-delta="-1" bindtap="onCountChange" disabled="{{count === 0}}" aria-label="减少数量">−</button><text class="count">{{count}}</text><button data-delta="1" bindtap="onCountChange" disabled="{{count === 99}}" aria-label="增加数量">+</button></view></view>
+      <view class="control-row last"><view><text class="control-title">接收消息提醒</text><text class="control-description">本页交互演示，不申请通知权限</text></view><switch checked="{{notificationsEnabled}}" bindchange="onSwitchChange" color="#07a66a" aria-label="接收消息提醒" /></view>
+      <view class="state-code"><text class="code-dot"></text>noticeEnabled: <text class="code-value">{{notificationsEnabled ? 'true' : 'false'}}</text></view>
+    </view>
+  </view>
+
+  <view class="demo-section">
+    <section-heading eyebrow="03 / FEEDBACK" title="让操作有回声" />
+    <view class="demo-card feedback-card">
+      <view class="feedback-buttons"><button class="feedback-button" bindtap="onToastTap" hover-class="button-hover"><view class="feedback-symbol">✓</view><text>轻提示</text><text class="feedback-en">Toast</text></button><view class="feedback-divider"></view><button class="feedback-button" bindtap="onModalTap" hover-class="button-hover"><view class="feedback-symbol modal-symbol">▭</view><text>确认弹窗</text><text class="feedback-en">Modal</text></button></view>
+      <view class="feedback-status"><text class="small-dot"></text>{{lastAction}}</view>
+    </view>
+  </view>
+
+  <view class="demo-section">
+    <section-heading eyebrow="04 / EMPTY STATE" title="留白也有温度" action-text="{{items.length ? '重置' : ''}}" bind:action="onResetItems" />
+    <view class="demo-card empty-card">
+      <empty-state wx:if="{{!items.length}}" title="灵感，正在路上" description="列表还没有内容，试着添加一条记录。" action-text="添加示例内容" bind:action="onAddItems" />
+      <view wx:else class="sample-list"><view class="sample-item" wx:for="{{items}}" wx:key="id"><view class="sample-marker">{{index + 1}}</view><view><text class="sample-title">{{item.title}}</text><text class="sample-description">{{item.description}}</text></view><text class="sample-check">✓</text></view></view>
+    </view>
+  </view>
+  <text class="bottom-note">原生组件 + 自定义组件，让搭建更轻松。</text>
+</view>
